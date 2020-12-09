@@ -3,7 +3,6 @@ import 'dart:developer';
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:find_construction_new/models/uploadpic.dart';
-import 'package:find_construction_new/screens/demo_class.dart';
 import 'package:find_construction_new/utils/app_colors.dart';
 import 'package:find_construction_new/weight/home_drawer.dart';
 import 'package:flutter/material.dart';

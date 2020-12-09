@@ -9,7 +9,9 @@ import 'package:find_construction_new/weight/home_drawer.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -18,6 +20,7 @@ import 'dart:convert' as JSON;
 import 'package:find_construction_new/models/house_main_models.dart' as house;
 import 'package:find_construction_new/models/house_main_models.dart'
     as newHouse;
+import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'detail_screen.dart';
@@ -66,9 +69,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> read() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
-      userId = json.decode(prefs.getString("login_response"))["response"]
-              ["id"] ??
-          "";
+      userId = json.decode(prefs.getString("login_response"))["response"]["id"] ?? "";
     });
   }
 
@@ -178,8 +179,21 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void getLocation() async {
-    position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
+
+    var status = await Permission.location.status;
+    if (!status.isGranted) {
+      await Permission.location.request();
+      position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    }
+    else{
+      print("-----------------------deny-----------------");
+    }
+
+
+
+
+
+   
     print("-------------------lat: ${position.latitude} and lng: ${position.longitude}------------");
 
     saveValue(position.latitude, position.longitude);
@@ -188,7 +202,7 @@ class _HomeScreenState extends State<HomeScreen> {
       _markers.add(
         Marker(
             // ignore: deprecated_member_use
-            icon: BitmapDescriptor.fromAsset("images/home_marker.png"),
+           // icon: BitmapDescriptor.fromAsset("images/home_marker.png"),
             markerId: MarkerId('SomeId'),
             position: LatLng(position.latitude, position.longitude),
             infoWindow: InfoWindow(title: 'The title of the marker')),
@@ -216,7 +230,7 @@ class _HomeScreenState extends State<HomeScreen> {
           setState(() {
             _markers.add(Marker(
                 // ignore: deprecated_member_use
-                //   icon: BitmapDescriptor.fromAsset("images/home_marker.png"),
+                icon: BitmapDescriptor.fromAsset("images/home_marker.png"),
                 markerId: MarkerId(i.toString()),
                 infoWindow: InfoWindow(title: houseMainModel.response[i].name),
                 position: LatLng(

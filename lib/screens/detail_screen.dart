@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:chewie/chewie.dart';
 import 'package:connectivity/connectivity.dart';
@@ -8,12 +7,10 @@ import 'package:find_construction_new/screens/favorite_house_screen.dart';
 import 'package:find_construction_new/screens/videos_show.dart';
 import 'package:find_construction_new/utils/app_colors.dart';
 import 'package:find_construction_new/models/house_main_models.dart' as house;
-
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as JSON;
 import 'package:flutter/cupertino.dart';
-
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -23,8 +20,7 @@ import 'package:share/share.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:video_player/video_player.dart';
-import 'package:video_thumbnail/video_thumbnail.dart';
-
+//import 'package:video_thumbnail/video_thumbnail.dart';
 import 'home_Screen.dart';
 
 class DetailScreen extends StatefulWidget {
@@ -77,7 +73,6 @@ class _DetailScreenState extends State<DetailScreen>
   Future<void> read() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
-    //  catId=prefs.getString("cId");
       userId = json.decode(prefs.getString("login_response"))["response"][0]["id"] ?? "";
     });
   }
@@ -90,21 +85,14 @@ class _DetailScreenState extends State<DetailScreen>
       final String responseString = response.body;
       print(
           "----------------------setFavoriteIHouse ${house.houseMainModelFromJson(responseString).message}----------------------------");
-     /* setState(() {
-        _detailHouseModel = house.houseMainModelFromJson(responseString);
-        isFavoriteCheck= _detailHouseModel.response.ischeck;
-        isLoading = false;
-      });*/
       Navigator.pop(context);
-    //  Navigator.push(context, MaterialPageRoute(builder: (context){return DetailScreen( cID: widget.cID ,userId: widget.userId,);}));
-    // Scaffold.of(context).showSnackBar(SnackBar(content: Text(house.houseMainModelFromJson(responseString).message)));
       return house.houseMainModelFromJson(responseString);
     } else {
       return null;
     }
   }
 
-  Future<String> thumbnailMaker() async {
+/*  Future<String> thumbnailMaker() async {
     uint8list = await VideoThumbnail.thumbnailFile(
       video: _detailHouseModel.response.video[0],
       thumbnailPath: (await getTemporaryDirectory()).path,
@@ -113,7 +101,7 @@ class _DetailScreenState extends State<DetailScreen>
       quality: 75,
     );
     return uint8list.toString();
-  }
+  }*/
 
   share(BuildContext context,String text) {
     final RenderBox box = context.findRenderObject();
@@ -136,13 +124,13 @@ class _DetailScreenState extends State<DetailScreen>
         isLoading = false;
       });
       _tabController = new TabController(vsync: this, length: 3);
-      thumbnailMaker().then((value) {
+  /*    thumbnailMaker().then((value) {
         setState(() {
           thumbnail = value;
           loading = false;
         });
         print("---------thubanil  ${value}----------");
-      });
+      });*/
       _markers.add(
         Marker(
             // ignore: deprecated_member_use
@@ -184,7 +172,6 @@ class _DetailScreenState extends State<DetailScreen>
   Future<void>InternetCheck() async{
     var connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.mobile || connectivityResult == ConnectivityResult.wifi) {
-
       setState(() {
 
         print("----------------------Cid ${widget.cID} UserId :$userId-------------------");
@@ -754,9 +741,7 @@ class _DetailScreenState extends State<DetailScreen>
                                             onTap: () {
                                               Navigator.of(context).push(
                                                 MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      ChewieListItem(
-                                                    videoPlayerController: VideoPlayerController.network(_detailHouseModel.response.video[index]),
+                                                  builder: (context) => ChewieListItem(videoPlayerController: VideoPlayerController.network(_detailHouseModel.response.video[index]),
                                                   ),
                                                 ),
                                               );
